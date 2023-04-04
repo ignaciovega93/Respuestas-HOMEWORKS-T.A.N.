@@ -14,14 +14,14 @@ from stg.order_line_sale
 where venta > 100000 and moneda = 'ARS'
 
 -- Respuesta N°4 Clase 2
-select distinct moneda,
+select moneda,
 sum(coalesce(descuento, 0)) as descuento_x_moneda
 from stg.order_line_sale
 where fecha between '2022-11-01' and '2022-11-30'
 group by moneda
 
 -- Respuesta N°5 Clase 2
-select distinct moneda,
+select moneda,
 sum(impuestos) as impuesto_pagado
 from stg.order_line_sale
 where fecha between '2022-01-01' and '2022-12-31'
@@ -41,10 +41,10 @@ group by orden
 order by orden
 
 -- Respuesta N°8 Clase 2
-select distinct tienda, fecha, avg(inicial) as inventario_promedio
+select tienda, fecha, avg(inicial) as inventario_promedio
 from stg.inventory
 group by tienda, fecha
-order by fecha asc
+order by fecha, tienda asc
 
 select tienda, fecha, avg(inicial) as inventario_promedio
 from stg.inventory
@@ -52,9 +52,9 @@ group by tienda, fecha
 order by fecha, tienda asc
 
 -- Respuesta N°9 Clase 2
-select distinct producto,
-sum(venta+coalesce(descuento, 0)) as net_sale,
-sum(coalesce(descuento, 0)/venta)*-1 as percentage_discount
+select producto,
+sum(venta+coalesce(descuento, 0)-coalesce(impuestos, 0)+coalesce(creditos,0)) as net_sale,
+sum(coalesce(descuento, 0)/venta)*-100 as percentage_discount
 from stg.order_line_sale
 where moneda = 'ARS'
 group by producto
@@ -73,14 +73,14 @@ where nombre like '%PHILIPS%' and is_active = 'true'
 group by codigo_producto
 
 -- Respuesta N°12 Clase 2
-select distinct tienda, moneda,
+select tienda, moneda,
 sum(venta+coalesce(descuento,0)) as monto_vendido
 from stg.order_line_sale
 group by tienda, moneda
 order by monto_vendido desc
 
 -- Respuesta N°13 Clase 2
-select distinct moneda, producto,
+select moneda, producto,
 avg(venta+coalesce(descuento,0)-coalesce(impuestos,0)+coalesce(creditos,0)) as average_sales_price
 from stg.order_line_sale
 group by moneda, producto
