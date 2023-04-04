@@ -41,15 +41,10 @@ group by orden
 order by orden
 
 -- Respuesta N°8 Clase 2
-select tienda, fecha, avg(inicial) as inventario_promedio
+select tienda, sku, fecha, avg(inicial+final)/2 as inventario_promedio
 from stg.inventory
-group by tienda, fecha
-order by fecha, tienda asc
-
-select tienda, fecha, avg(inicial) as inventario_promedio
-from stg.inventory
-group by tienda, fecha
-order by fecha, tienda asc
+group by tienda, fecha, sku
+order by fecha, sku, tienda asc
 
 -- Respuesta N°9 Clase 2
 select producto,
@@ -81,10 +76,10 @@ order by monto_vendido desc
 
 -- Respuesta N°13 Clase 2
 select moneda, producto,
-avg(venta+coalesce(descuento,0)-coalesce(impuestos,0)+coalesce(creditos,0)) as average_sales_price
+sum(venta)/sum(cantidad) as average_sales
 from stg.order_line_sale
 group by moneda, producto
-order by producto
+order by producto, moneda
 
 -- Respuesta N°14 Clase 2
 select orden, 
