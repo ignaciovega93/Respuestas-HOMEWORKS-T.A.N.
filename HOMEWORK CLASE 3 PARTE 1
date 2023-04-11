@@ -90,8 +90,20 @@ from order_sale
 group by material_pdto
 
 -- Respuesta pregunta 8 clase 3
-
+with coste_usd as (
+select *, 
+	case 
+		when ols.moneda = 'ARS' then ols.venta/fx.cotizacion_usd_peso
+		when ols.moneda = 'URU' then ols.venta/fx.cotizacion_usd_uru
+		when ols.moneda = 'EUR' then ols.venta/fx.cotizacion_usd_eur
+	end as venta_bruta_usd
+from stg.order_line_sale ols
+left join stg.monthly_average_fx_rate fx on fx.mes = date(date_trunc('month', ols.fecha))
+)
+select * from coste_usd as cu
+order by cu.orden, cu.producto
 
 -- Respuesta pregunta 9 clase 3
+
 -- Respuesta pregunta 10 clase 3
 -- Respuesta pregunta 11 clase 3
