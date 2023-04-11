@@ -55,9 +55,43 @@ where to_date(ssc.fecha, 'YYYY-MM-DD') >= sm.fecha_apertura
 group by sm.nombre, sm.fecha_apertura
 
 -- Respuesta pregunta 6 clase 3
+select i.sku as codigo_producto, i.tienda, sm.nombre, sum(i.inicial)+sum(i.final)/2 as inventario_promedio, 
+date(date_trunc('month', i.fecha)) as mes
+from stg.store_master sm
+left join stg.inventory i on sm.codigo_tienda = i.tienda
+group by i.sku, i.tienda, sm.nombre, date_trunc('month', i.fecha)
+order by i.tienda, mes, codigo_producto
 
 -- Respuesta pregunta 7 clase 3
+-- Este lo pude hacer sin CTE ya que me di cuenta que no siendo CASE una función de agregación, permite agrupar por ésta.
+select sum(ols.cantidad) as unidades_vendidas, 
+	case 
+		when pm.material is null then 'Unknown'
+		when pm.material = 'PLASTICO' or pm.material = 'plastico' then 'Plastico' 
+		else material 
+	end as material_pdto
+from stg.order_line_sale ols
+left join stg.product_master pm on ols.producto = pm.codigo_producto
+group by material_pdto
+
+-- Este es el mismo ejercicio pero lo hice con CTE
+with order_sale as (
+select ols.*, 
+	case 
+		when pm.material is null then 'Unknown'
+		when pm.material = 'PLASTICO' or pm.material = 'plastico' then 'Plastico' 
+		else material 
+	end as material_pdto
+from stg.order_line_sale ols
+left join stg.product_master pm on ols.producto = pm.codigo_producto
+)
+select material_pdto, sum(cantidad)
+from order_sale
+group by material_pdto
+
 -- Respuesta pregunta 8 clase 3
+
+
 -- Respuesta pregunta 9 clase 3
 -- Respuesta pregunta 10 clase 3
 -- Respuesta pregunta 11 clase 3
