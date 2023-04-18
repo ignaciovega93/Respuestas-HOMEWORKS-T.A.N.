@@ -40,7 +40,7 @@ set is_local = case
 -- Respuesta pregunta 5 clase 4
 select * 
 into bkp.order_line_sale
-from stg.order_line_sale; -- primero creamos un respaldo de la tabla original, lo que sigue es el ejercicio como tal
+from stg.order_line_sale; -- primero cree un respaldo de la tabla original, lo que sigue es el ejercicio como tal
 
 alter table stg.order_line_sale
 add column line_key varchar(20);
@@ -49,12 +49,9 @@ update stg.order_line_sale
 set line_key = orden || ' - ' || producto;
 
 
--- Respuesta pregunta 6 clase 4 (NO ENTENDI LA PREGUNTA PERO AHI VAN LAS 2 POSIBLES RESPUESTAS)
-alter table stg.order_line_sale
-drop column pos; -- si queremos elimnar la columna POS
-
+-- Respuesta pregunta 6 clase 4
 delete from stg.order_line_sale
-where pos = 1; -- si queremos eliminar las filas donde POS = 1 manteniendo la columna POS
+where pos = 1;
 
 -- Respuesta pregunta 7 clase 4
 create table bkp.employees
@@ -79,7 +76,8 @@ VALUES 	('Juan', 'Perez', '2022-03-01', null, '+54113869867', 'Argentina', 'Sant
 		('Fernando', 'moralez', '2022-04-04', null, null, 'España', 'Valencia', 9, 'Vendedor'); 
 	
 -- Respuesta pregunta 9 clase 4
--- Busqué información sobre el tipo de dato "datetime" y vi que no existe en PostgreSQL al contrario de lo que sucede en MySQL, pero que el equivalente en PostgreSQL es "timestamp", asi que lo hice con este.
+-- Busqué información sobre el tipo de dato "datetime" y vi que no existe en PostgreSQL al contrario de lo que sucede en MySQL, 
+-- pero que el equivalente en PostgreSQL es "timestamp", asi que lo hice con este.
 select *, current_timestamp as last_update_ts
 into bkp.cost_20230408
 from stg.cost
