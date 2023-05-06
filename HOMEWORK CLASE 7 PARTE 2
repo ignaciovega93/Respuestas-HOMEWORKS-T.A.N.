@@ -1,0 +1,26 @@
+-- Respuesta pregunta 1 Clase 7 Parte 2
+with ols_porcentajes as (
+	select
+		count(case when descuento is not null then 1 end) as filled_discount,
+		count(case when descuento is null then 2 end) as null_discount,
+		count(case when descuento is null then 1 else 1 end) as total_of_discounts,
+		count(case when creditos is not null then 1 end) as filled_credits,
+		count(case when creditos is null then 2 end) as null_credits,
+		count(case when creditos is null then 1 else 1 end) as total_of_credits
+	from stg.order_line_sale
+)
+select
+	round(sum((null_discount*100.0)/total_of_discounts), 2) as null_discount_percentage,
+	round(sum((null_credits*100.0)/total_of_credits), 2) as null_credits_percentage
+from ols_porcentajes
+;
+
+-- Respuesta pregunta 2 Clase 7 Parte 2
+
+-- Respuesta pregunta 3 Clase 7 Parte 2
+
+-- Respuesta pregunta 4 Clase 7 Parte 2
+
+-- Respuesta pregunta 5 Clase 7 Parte 2
+
+-- Respuesta pregunta 6 Clase 7 Parte 2
