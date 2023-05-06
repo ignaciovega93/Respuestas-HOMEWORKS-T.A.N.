@@ -16,6 +16,56 @@ from ols_porcentajes
 ;
 
 -- Respuesta pregunta 2 Clase 7 Parte 2
+with revenues_usd as (
+	select 
+		ols.line_key,
+		ols.orden,
+		ols.producto,
+		ols.tienda,
+		ols.fecha,
+		ols.cantidad,
+		round(case 
+			when ols.moneda = 'ARS' 
+			then ols.venta/fx.cotizacion_usd_peso
+			when ols.moneda = 'URU' 
+			then ols.venta/fx.cotizacion_usd_uru
+			when ols.moneda = 'EUR' 
+			then ols.venta/fx.cotizacion_usd_eur
+		end, 4) as ventas_usd,
+		round(case 
+			when ols.moneda = 'ARS' 
+			then coalesce(ols.descuento, 0)/fx.cotizacion_usd_peso
+			when ols.moneda = 'URU'   
+			then coalesce(ols.descuento, 0)/fx.cotizacion_usd_uru
+			when ols.moneda = 'EUR' 
+			then coalesce(ols.descuento, 0)/fx.cotizacion_usd_eur
+		end, 4) as descuentos_usd,
+		round(case 
+			when ols.moneda = 'ARS' 
+			then ols.impuestos/fx.cotizacion_usd_peso
+			when ols.moneda = 'URU' 
+			then ols.impuestos/fx.cotizacion_usd_uru
+			when ols.moneda = 'EUR' 
+			then ols.impuestos/fx.cotizacion_usd_eur
+		end, 4) as impuestos_usd,
+		ols.moneda,
+		ols.pos,
+		ols.is_walkout
+	from 
+		stg.order_line_sale ols
+	left join 
+		stg.monthly_average_fx_rate fx 
+	on 
+		fx.mes = date(date_trunc('month', ols.fecha))	
+)
+select 
+	tienda,
+	count(case when is_walkout = true then 1 else null end) as walkout_orders,
+	sum(case when is_walkout = true then ventas_usd else null end) as usd_walkout_sales,
+	round((sum(case when is_walkout = true then ventas_usd else null end)/sum(ventas_usd))*100, 2) as walkout_percentage_over_sales
+from revenues_usd
+group by 1
+;
 
 -- Respuesta pregunta 3 Clase 7 Parte 2
 
