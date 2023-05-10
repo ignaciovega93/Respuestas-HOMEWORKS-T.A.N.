@@ -183,6 +183,8 @@ order by 1
 
 
 -- Respuesta pregunta 6 Clase 7 Parte 2
+CREATE OR REPLACE VIEW stg.new_inventory AS 
+
 with cte as (
 	select
 		i.fecha,
@@ -229,3 +231,4 @@ select
 from cte
 left join past_avg pa
 on cte.fecha = pa.fecha and cte.sku = pa.producto and cte.tienda = pa.tienda
+;
